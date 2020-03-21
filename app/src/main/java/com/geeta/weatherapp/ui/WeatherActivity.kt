@@ -1,6 +1,7 @@
 package com.geeta.weatherapp.ui
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Data
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.cafecraft.aps.ui.base.BaseActivity
@@ -22,14 +24,11 @@ import com.geeta.weatherapp.data.weather.LocationModel
 import com.geeta.weatherapp.data.weather.WeatherModel
 import com.geeta.weatherapp.databinding.ActivityWeatherBinding
 import com.geeta.weatherapp.ui.viewmodel.WeatherViewModel
-import com.geeta.weatherapp.utils.kelvinToCelsius
-import com.geeta.weatherapp.utils.unixTimestampToDateTimeString
-import com.geeta.weatherapp.utils.unixTimestampToTimeString
+import com.geeta.weatherapp.utils.AppData
+import com.geeta.weatherapp.utils.AppUtils
+import com.geeta.weatherapp.utils.KEY_WEATHER
 import com.geeta.weatherapp.worker.WeatherWork
 import kotlinx.android.synthetic.main.activity_weather.*
-import kotlinx.android.synthetic.main.layout_sunrise_sunset.*
-import kotlinx.android.synthetic.main.layout_weather_additional_view.*
-import kotlinx.android.synthetic.main.layout_weather_basic_view.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -42,8 +41,11 @@ class WeatherActivity : BaseActivity() {
     lateinit var locationData:LocationModel
     @Inject
     lateinit var weatherViewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var appData: AppData
     private var mPeriodicWorkRequest: PeriodicWorkRequest? = null
     lateinit var activityWeatherBinding: ActivityWeatherBinding
+    val LOCATION=101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +53,8 @@ class WeatherActivity : BaseActivity() {
         activityWeatherBinding = DataBindingUtil.setContentView(this, R.layout.activity_weather);
         ViewModelProvider(this,weatherViewModelFactory).get(WeatherViewModel::class.java)
         setLiveDataListeners()
-        getLastLocation()
+        checkPermissions()
+        forecastWeather()
     }
 
     override fun onResume() {
@@ -90,6 +93,9 @@ class WeatherActivity : BaseActivity() {
                 progressBar.visibility = View.GONE
         })
 
+        weatherViewModel.locationDetail.observe(this, Observer {
+            weatherViewModel.getCurrentweather()
+        })
         /**
          * This method will be triggered when ViewModel successfully receive WeatherData from our
          * data source (I mean Model). Activity just observing (subscribing) this LiveData for showing
@@ -115,49 +121,33 @@ class WeatherActivity : BaseActivity() {
             output_group.visibility = View.GONE
             tv_error_message.visibility = View.VISIBLE
             tv_error_message.text = errorMessage
+            showRetryAlertForWeather(errorMessage)
+
         })
     }
 
-    private fun getLastLocation() {
-        if (checkPermissions()) {
-            if (isLocationEnabled()) {
-                weatherViewModel.getWeather()
-            } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
+    private fun forecastWeather() {
+        if (checkPermissions()&& AppUtils.isNetworkAvailable(applicationContext)) {
+            weatherViewModel.getWeather()
         } else {
             requestPermissions()
         }
     }
 
     private fun checkPermissions(): Boolean {
-        return !((ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-                != PackageManager.PERMISSION_GRANTED) &&( ContextCompat.checkSelfPermission(
+        return !(ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED ))
+        ) != PackageManager.PERMISSION_GRANTED )
 
     }
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ),
             PERMISSION_ID
-        )
-    }
-    private fun isLocationEnabled(): Boolean {
-        val locationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
         )
     }
 
@@ -168,20 +158,40 @@ class WeatherActivity : BaseActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == this.PERMISSION_ID && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
+                forecastWeather()
+        }
+        else{
+            requestPermissions()
         }
     }
     private fun setWeatherInfo(weatherData: WeatherModel) {
         activityWeatherBinding.weatherdata=weatherData
         output_group.visibility = View.VISIBLE
         tv_error_message.visibility = View.GONE
-    /*    mPeriodicWorkRequest = PeriodicWorkRequest.Builder(
+
+    }
+    fun startPerodicWork()
+    {
+//        var outData=Data.Builder().put(KEY_WEATHER,WeatherModel())
+        mPeriodicWorkRequest = PeriodicWorkRequest.Builder(
             WeatherWork::class.java,
             2, TimeUnit.HOURS
         )
             .addTag("periodicWorkRequest")
             .build()
 
-        WorkManager.getInstance(this).enqueue(mPeriodicWorkRequest!!)*/
+        WorkManager.getInstance(this).enqueue(mPeriodicWorkRequest!!)
     }
+    fun showRetryAlertForWeather(message: String) {
+        val builder = AlertDialog.Builder(this, R.style.AppTheme)
+        builder.setMessage(message).setTitle(R.string.app_name).setCancelable(true)
+        builder.setNeutralButton("Ok") { dialog, which ->
+            forecastWeather()
+            dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cencel)){
+            dialog, which ->  dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
 }

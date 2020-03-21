@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.geeta.weatherapp.data.weather.WeatherModel
 import com.geeta.weatherapp.database.WeatherDataBase
 import com.geeta.weatherapp.database.WeatherDataDao
+import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,8 +29,8 @@ class WeatherDbRepository @Inject constructor(val weatherDataDao: WeatherDataDao
         ).build()
     }
 
-    override fun getWeatherDetail(): LiveData<WeatherModel> {
-        return weatherDataDao.getAll()
+    override fun getWeatherDetail():Observable<WeatherModel> {
+        return weatherDataDao.getWeather()
     }
 
     override fun deletWeatherDetail() {
@@ -37,6 +38,10 @@ class WeatherDbRepository @Inject constructor(val weatherDataDao: WeatherDataDao
     }
 
     override fun insertWeatherDatail(weatherModel: WeatherModel) {
-        weatherDataDao.insert(weatherModel)
+        weatherDataDao.insertWeather(weatherModel)
+    }
+
+    override fun getDateAndTime(): Observable<Int> {
+        return weatherDataDao.getDate()
     }
 }

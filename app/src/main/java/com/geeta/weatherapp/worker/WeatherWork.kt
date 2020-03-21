@@ -3,10 +3,12 @@ package com.geeta.weatherapp.worker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.geeta.weatherapp.api.datamanager.WeatherDataManager
 import com.geeta.weatherapp.data.weather.LocationModel
+import com.geeta.weatherapp.data.weather.WeatherModel
 import com.geeta.weatherapp.database.repositry.WeatherDbRepository
 import com.geeta.weatherapp.utils.CommonResponseParser
 import com.geeta.weatherapp.utils.KEY_WEATHER
@@ -46,14 +48,20 @@ class WeatherWork(context: Context,workerParameters: WorkerParameters) : Worker(
     @SuppressLint("CheckResult")
     fun getCurrentweather(location: Location)
     {
-            weatherDataManager.updateWeather(location.latitude,location.longitude).subscribe(
-                {result->
-                    WeatherDbRepository.invoke(this.applicationContext).weatherDataDao().insert(result)
+            weatherDataManager.updateWeather(location.latitude,location.longitude)
+                .map { result->
+                    WeatherDbRepository.invoke(this.applicationContext).weatherDataDao().insertWeather(result)
+                    return@map result
+                }
+                .subscribe(
+                {
+
                 }
                 , {error->
 
                 })
 
     }
+
 
 }

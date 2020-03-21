@@ -1,6 +1,7 @@
 package com.geeta.weatherapp.network
 
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.geeta.weatherapp.BuildConfig
 import com.geeta.weatherapp.api.APIRestConstant
 import com.geeta.weatherapp.api.BaseApiManager
 import com.geeta.weatherapp.utils.AppData
@@ -42,22 +43,14 @@ class NetworkModule @Inject constructor() {
     @Singleton
     internal  fun provideOkHttpClient(interceptor: HttpLoggingInterceptor, hostnameVerifier: HostnameVerifier): OkHttpClient {
         val builder = OkHttpClient.Builder()
-      /*  try {
-            builder.sslSocketFactory(TLSSocketFactory(), TrustedCertificate())
-        } catch (e: KeyManagementException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        }*/
-
         builder.hostnameVerifier(hostnameVerifier)
         builder.connectTimeout(HTTP_CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
         builder.readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
         builder.addInterceptor(interceptor)
-        /*if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             builder.addNetworkInterceptor(StethoInterceptor());
-        }*/
-//        builder.addInterceptor(ErrorInterceptor())
+        }
+        builder.addInterceptor(ErrorInterceptor())
         return builder.build()
     }
 

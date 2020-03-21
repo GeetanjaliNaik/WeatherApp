@@ -2,6 +2,7 @@ package com.geeta.weatherapp
 
 import android.content.Context
 import androidx.multidex.MultiDexApplication
+import com.facebook.stetho.Stetho
 import com.geeta.weatherapp.injection.ApplicationComponent
 import com.geeta.weatherapp.injection.DaggerApplicationComponent
 //import com.geeta.weatherapp.injection.DaggerApplicationComponent
@@ -19,7 +20,7 @@ open class WeatherApplication: MultiDexApplication() , HasAndroidInjector {
         super.onCreate()
         appContext=this
         buildComponent()
-
+        setUpStethoInspector()
     }
 
 
@@ -48,12 +49,15 @@ open class WeatherApplication: MultiDexApplication() , HasAndroidInjector {
         return anyDispatchingAndroidInjector
     }
 
-    /* override fun activityInjector(): AndroidInjector<Activity>? {
-         return activityDispatchingAndroidInjector
-     }
-
-     override fun serviceInjector(): AndroidInjector<Service> {
-         return serviceDispatchingAndroidInjector
-     }*/
+    private fun setUpStethoInspector() {
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this);
+        }
+        if (BuildConfig.DEBUG) {
+            Stetho.initialize(
+                Stetho.newInitializerBuilder(this).enableDumpapp(
+                    Stetho.defaultDumperPluginsProvider(this)).build())
+        }
+    }
 
 }

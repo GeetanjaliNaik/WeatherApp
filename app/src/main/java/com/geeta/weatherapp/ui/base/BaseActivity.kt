@@ -64,28 +64,6 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         builder.create().show()
     }
 
-    @SuppressLint("ServiceCast")
-    fun hideSoftKeyboard(v: View?) {
-        if (v != null) {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(v.windowToken, 0)
-        }
-    }
-
-    fun moveNextTo(nextActivity: Class<*>) {
-        val intent = Intent(this, nextActivity)
-        startActivity(intent)
-    }
-
-    fun moveNextToFinishingIt(nextActivity: Class<*>) {
-        moveNextTo(nextActivity)
-        finish()
-    }
-
-    fun showErrorMessage(message: String) {
-        showAlert(message)
-    }
-
     fun showHideProgressDialog(show:Boolean){
         if(show) {
             progressDialogHelper?.show()
@@ -95,7 +73,5 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         }
     }
 
-    fun showErrorToast(message: String) {
-//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
+
 }

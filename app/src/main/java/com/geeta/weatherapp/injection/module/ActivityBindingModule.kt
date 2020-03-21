@@ -2,7 +2,6 @@ package com.geeta.weatherapp.injection.module
 
 
 import com.geeta.weatherapp.injection.scopes.PerActivity
-import com.geeta.weatherapp.ui.DemoActivity
 import com.geeta.weatherapp.ui.WeatherActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -13,9 +12,5 @@ abstract class ActivityBindingModule() {
     @ContributesAndroidInjector
     abstract fun weatherActivity(): WeatherActivity
 
-
-    @PerActivity
-    @ContributesAndroidInjector
-    abstract fun demoActivity(): DemoActivity
 
 }

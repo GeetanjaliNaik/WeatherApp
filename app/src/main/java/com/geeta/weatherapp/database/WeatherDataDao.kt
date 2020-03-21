@@ -1,19 +1,22 @@
 package com.geeta.weatherapp.database
 
-import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
+
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import com.geeta.weatherapp.data.weather.WeatherModel
+import io.reactivex.Observable
 
 @Dao
 interface WeatherDataDao {
 
     @Query("SELECT * from weatherData")
-    fun getAll(): LiveData<WeatherModel>
+    fun getWeather(): Observable<WeatherModel>
+
+    @Query("SELECT dt from weatherData")
+    fun getDate():Observable<Int>
 
     @Insert(onConflict = REPLACE)
-    fun insert(weatherData: WeatherModel)
+    fun insertWeather(weatherData: WeatherModel)
 
     @Query("DELETE from weatherData")
     fun deleteAll()
