@@ -135,12 +135,5 @@ class WeatherViewModel @Inject constructor(val application: Application) : ViewM
                     progressBarLiveData.postValue(false)
                 })
     }
-    fun createLocationRequest() {
-        val locationRequest = LocationRequest.create()?.apply {
-            interval = 300000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-    }
 
 }
