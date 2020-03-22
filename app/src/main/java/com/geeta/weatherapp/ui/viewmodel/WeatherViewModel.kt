@@ -40,49 +40,11 @@ class WeatherViewModel @Inject constructor(val application: Application) : ViewM
     var weatherData= MutableLiveData<WeatherModel>()
     val weatherInfoFailureLiveData = MutableLiveData<String>()
     val locationDetail=MutableLiveData<LocationModel>()
-    var timerInterval:Number=0
 
-   private var fusedLocationClient :FusedLocationProviderClient?=null
-    var locationModel:LocationModel?=null
-
-   /* private fun getCurrentlocathion()
-    {
-        progressBarLiveData.postValue(true)
-
-      *//* var  mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE)
-
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000,
-            1000, mLocationListener)*//*
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(application*//*WeatherApplication.appContext!!*//*)
-        fusedLocationClient?.lastLocation
-            ?.addOnSuccessListener { location: Location? ->
-                location?.also {
-                    //                    location.altitude
-
-                    locationModel=LocationModel(
-                        longitude = location.longitude,
-                        latitude = location.latitude
-                    )
-    //                    locationDetail.postValue(locationModel)
-                    appData.locationModel=locationModel
-                    locationDetail.postValue(locationModel)
-                    progressBarLiveData.postValue(false)
-                }
-            }?.addOnFailureListener {
-                if(appData.locationModel!=null)
-                    getCurrentweather()
-                else {
-                    weatherInfoFailureLiveData.postValue(application.resources.getString(R.string.unable_to_get_current_location))
-                    progressBarLiveData.postValue(false)
-                }
-
-            }
-    }*/
     fun getWeather()
     {
-//        progressBarLiveData.postValue(true)
+
         getWeatherData()
-//       getCurrentlocathion()
 
     }
     @SuppressLint("CheckResult")
@@ -172,29 +134,6 @@ class WeatherViewModel @Inject constructor(val application: Application) : ViewM
 
                     progressBarLiveData.postValue(false)
                 })
-
-
-
-       /* appData.locationModel?.let { weatherDataManager.updateWeather(it.latitude,it.longitude)
-            .subscribeOn(Schedulers.newThread())
-            .map { result->
-                var weatherDataDao=WeatherDbRepository.invoke(application).weatherDataDao()
-                weatherDataDao.deleteAll()
-                weatherDataDao.insertWeather(result)
-                return@map result
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {result->
-//                    WeatherDbRepository.invoke(application).weatherDataDao().insert(result)
-                    weatherData.postValue(result)
-                    progressBarLiveData.postValue(false)
-                }
-                , {error->
-                    weatherInfoFailureLiveData.postValue(  CommonResponseParser.ErrorParser.parseError(error, true))
-
-                    progressBarLiveData.postValue(false)
-                })  }*/
     }
     fun createLocationRequest() {
         val locationRequest = LocationRequest.create()?.apply {
