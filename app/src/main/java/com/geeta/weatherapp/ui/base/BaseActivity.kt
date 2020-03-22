@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.app.Fragment
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -45,7 +46,16 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         mDisposables?.add(fragemerConnectEmitter.connect())
     }
 */
+   fun moveNextTo(nextActivity: Class<*>) {
+       val intent = Intent(this, nextActivity)
+       intent.flags=FLAG_ACTIVITY_NO_ANIMATION
+       startActivity(intent)
+   }
 
+    fun moveNextToFinishingIt(nextActivity: Class<*>) {
+        moveNextTo(nextActivity)
+        finish()
+    }
     override fun onDestroy() {
         super.onDestroy()
         mDisposables?.clear()

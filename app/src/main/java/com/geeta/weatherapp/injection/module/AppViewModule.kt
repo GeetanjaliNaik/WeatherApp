@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.geeta.weatherapp.api.BaseApiManager
 import com.geeta.weatherapp.injection.scopes.ViewModelKey
+import com.geeta.weatherapp.ui.viewmodel.LocationViewModel
 import com.geeta.weatherapp.ui.viewmodel.WeatherViewModel
 import com.geeta.weatherapp.ui.viewmodel.WeatherViewModelFactory
 import dagger.Binds
@@ -26,6 +27,13 @@ abstract class AppViewModule {
 
     @Binds
     abstract fun bindWeatherViewModelFactory(factory: WeatherViewModelFactory?): ViewModelProvider.Factory?
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LocationViewModel::class)
+    abstract fun currentLocationViewModel(locationViewModel: LocationViewModel?): ViewModel?
+
+
 
 }
 

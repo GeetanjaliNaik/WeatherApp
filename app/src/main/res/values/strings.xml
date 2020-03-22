@@ -12,4 +12,8 @@
     <string name="unable_to_get_current_location">Unable to get current location.</string>
     <string name="cencel">Cencel</string>
     <string name="unable_to_get_weather_update">Unable to get weather update from db</string>
+    <string name="kindly_enable_location">Kindly enable the GPS on your phone</string>
+    <string name="permission_request">App requires location permission</string>
+    <string name="latLong">Longitude: %.3f, Latitude: %.3f</string>
+    <string name="unable_fatch_data">Unable to fatch weather data</string>
 </resources>

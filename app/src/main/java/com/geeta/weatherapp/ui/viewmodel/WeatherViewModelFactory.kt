@@ -14,7 +14,12 @@ class WeatherViewModelFactory @Inject constructor(private val context: Applicati
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(WeatherViewModel::class.java!!)) {
             WeatherViewModel(context) as T
-        } else {
+        }
+        else if (modelClass.isAssignableFrom(LocationViewModel::class.java!!))
+        {
+            LocationViewModel(context) as T
+        }
+        else {
             throw IllegalArgumentException("ViewModel Not Found")
         }
     }

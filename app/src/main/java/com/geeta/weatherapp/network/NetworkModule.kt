@@ -47,9 +47,9 @@ class NetworkModule @Inject constructor() {
         builder.connectTimeout(HTTP_CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
         builder.readTimeout(HTTP_READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
         builder.addInterceptor(interceptor)
-        if (BuildConfig.DEBUG) {
+       /* if (BuildConfig.DEBUG) {
             builder.addNetworkInterceptor(StethoInterceptor());
-        }
+        }*/
         builder.addInterceptor(ErrorInterceptor())
         return builder.build()
     }

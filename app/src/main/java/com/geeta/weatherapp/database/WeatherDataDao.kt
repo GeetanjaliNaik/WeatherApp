@@ -4,6 +4,7 @@ package com.geeta.weatherapp.database
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import com.geeta.weatherapp.data.weather.WeatherModel
+import io.reactivex.Maybe
 import io.reactivex.Observable
 
 @Dao
@@ -13,7 +14,10 @@ interface WeatherDataDao {
     fun getWeather(): Observable<WeatherModel>
 
     @Query("SELECT dt from weatherData")
-    fun getDate():Observable<Int>
+    fun getDate():Observable<List<Int>>
+
+    @Query("SELECT dt from weatherData")
+    fun getWeatherDataDT():Int
 
     @Insert(onConflict = REPLACE)
     fun insertWeather(weatherData: WeatherModel)

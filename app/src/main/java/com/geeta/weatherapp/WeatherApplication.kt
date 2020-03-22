@@ -20,7 +20,7 @@ open class WeatherApplication: MultiDexApplication() , HasAndroidInjector {
         super.onCreate()
         appContext=this
         buildComponent()
-        setUpStethoInspector()
+//        setUpStethoInspector()
     }
 
 
@@ -49,15 +49,5 @@ open class WeatherApplication: MultiDexApplication() , HasAndroidInjector {
         return anyDispatchingAndroidInjector
     }
 
-    private fun setUpStethoInspector() {
-        if (BuildConfig.DEBUG) {
-            Stetho.initializeWithDefaults(this);
-        }
-        if (BuildConfig.DEBUG) {
-            Stetho.initialize(
-                Stetho.newInitializerBuilder(this).enableDumpapp(
-                    Stetho.defaultDumperPluginsProvider(this)).build())
-        }
-    }
 
 }

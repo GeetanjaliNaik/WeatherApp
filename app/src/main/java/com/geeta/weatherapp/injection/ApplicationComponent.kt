@@ -7,6 +7,7 @@ import com.geeta.weatherapp.database.repositry.WeatherDbRepositoryLis
 import com.geeta.weatherapp.injection.module.ActivityBindingModule
 import com.geeta.weatherapp.injection.module.AppViewModule
 import com.geeta.weatherapp.injection.module.DataBaseModule
+import com.geeta.weatherapp.injection.module.WorkerModule
 import com.geeta.weatherapp.injection.scopes.PerApplication
 import com.geeta.weatherapp.network.NetworkModule
 import dagger.BindsInstance
@@ -23,6 +24,7 @@ import javax.inject.Singleton
     /*WeatherApplicationModule::class,*/
     NetworkModule::class,
     /*DataBaseModule::class,*/
+    WorkerModule::class,
     AppViewModule::class))
 interface ApplicationComponent {
     @Component.Builder

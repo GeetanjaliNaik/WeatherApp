@@ -11,6 +11,8 @@ class AppData{
         var locationModel:LocationModel?=null
 
 }
+const val LOCATION_REQUEST = 100
+const val GPS_REQUEST = 101
 @BindingAdapter("android:timestamp")
 public fun setTimeStamp(view: TextView, time:Int){
         view.text=time.unixTimestampToTimeString()

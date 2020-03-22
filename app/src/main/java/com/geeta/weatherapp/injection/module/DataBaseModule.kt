@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import com.geeta.weatherapp.database.WeatherDataBase
 import com.geeta.weatherapp.database.WeatherDataDao
+import com.geeta.weatherapp.database.repositry.LocationDataDao
 import com.geeta.weatherapp.database.repositry.WeatherDbRepository
 import com.geeta.weatherapp.database.repositry.WeatherDbRepositoryLis
 import com.geeta.weatherapp.injection.scopes.ApplicationContext
@@ -31,11 +32,16 @@ class DataBaseModule() {
     internal fun provideWeatherDataDao(weatherDataBase: WeatherDataBase): WeatherDataDao? {
         return weatherDataBase.weatherDataDao()
     }
+    @Provides
+    @Singleton
+    internal fun provideLocationDataDao(weatherDataBase: WeatherDataBase): LocationDataDao? {
+        return weatherDataBase.locationDataDao()
+    }
 
     @Provides
     @Singleton
-    internal fun provideWeatherRepository(weatherDataDao: WeatherDataDao): WeatherDbRepositoryLis? {
-        return WeatherDbRepository(weatherDataDao)
+    internal fun provideWeatherRepository(weatherDataDao: WeatherDataDao,locationDataDao: LocationDataDao): WeatherDbRepositoryLis? {
+        return WeatherDbRepository(weatherDataDao,locationDataDao)
     }
 
 }
