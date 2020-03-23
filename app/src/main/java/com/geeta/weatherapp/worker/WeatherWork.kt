@@ -32,23 +32,6 @@ class WeatherWork @Inject constructor( context: Context, workerParameters: Worke
             return Result.success()
 
     }
-   /* fun getCurrentlocathion()
-    {
-        var fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.applicationContext*//*WeatherApplication.appContext!!*//*)
-        fusedLocationClient?.lastLocation
-            ?.addOnSuccessListener { location: Location? ->
-                location?.also {
-                    //                    location.altitude
-
-                    var locationModel=LocationModel(
-                        longitude = location.longitude,
-                        latitude = location.latitude
-                    )
-                    Log.i("WEATHERAPP","Got Location")
-                    getCurrentweather(location)
-                }
-            }
-    }*/
     @SuppressLint("CheckResult")
     fun getCurrentweather()
     {
