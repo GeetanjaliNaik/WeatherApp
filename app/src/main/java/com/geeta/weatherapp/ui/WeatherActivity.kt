@@ -60,7 +60,7 @@ class WeatherActivity : BaseActivity() {
         ViewModelProvider(this,weatherViewModelFactory).get(WeatherViewModel::class.java)
         setLiveDataListeners()
 //        startLocationUpdate()
-
+        cencelProidicWork()//workmenager cencel
     }
 
     override fun onStart() {
@@ -77,6 +77,9 @@ class WeatherActivity : BaseActivity() {
         locationViewModel.getLocationData().observe(this, Observer {
             if(appData.locationModel==null)
                 weatherViewModel.getWeather()
+            else if(appData.locationModel!=null && appData.locationModel?.longitude!=it.longitude
+                && appData.locationModel?.latitude!=it.latitude )
+                weatherViewModel.getCurrentweather()
             appData.locationModel=it
 //            progressBar.visibility = View.GONE
 
@@ -182,7 +185,7 @@ class WeatherActivity : BaseActivity() {
         val builder = AlertDialog.Builder(this, R.style.MaterialAlertDialogStyle)
         builder.setMessage(message).setTitle(R.string.app_name).setCancelable(true)
         builder.setNeutralButton("Ok") { dialog, which ->
-//            forecastWeather()
+            weatherViewModel.getWeather()
             dialog.dismiss() }
         builder.setNegativeButton(getString(R.string.cencel)){
             dialog, which ->  dialog.dismiss()
@@ -192,6 +195,7 @@ class WeatherActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        startPerodicWork()//start workmenager
         appData.locationModel=null
     }
 

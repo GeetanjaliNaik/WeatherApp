@@ -43,9 +43,7 @@ class WeatherViewModel @Inject constructor(val application: Application) : ViewM
 
     fun getWeather()
     {
-
         getWeatherData()
-
     }
     @SuppressLint("CheckResult")
     private fun getWeatherData(){
